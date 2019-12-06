@@ -175,6 +175,60 @@ int height(node* root)
 	}
 }
 
+bool deleteNode(nodeptr root, int val) {
+	nodeptr toDel = search(root, val);
+	if (toDel == NULL) {
+		return false;
+	}
+	else {
+		if (isLeaf(toDel)) {
+			if (toDel->data == toDel->parent->right->data) {
+				toDel->parent->right = NULL;
+				delete toDel;
+			}
+			else {
+				toDel->parent->left = NULL;
+				delete toDel;
+			}
+			return true;
+		}
+		//If node has 2 children
+		else if (hasLeft(toDel) && hasRight(toDel)) {
+			nodeptr toSwap = search(root, nextHighest(root, toDel->data));
+			toDel->data = toSwap->data;
+			if (toDel->data == toDel->right->data) {
+				toDel->right = toDel->right->right;
+				delete toSwap;
+			}
+			else {
+				//delete swapped in node
+				deleteNode(toSwap, toSwap->data);
+			}
+		}
+		//If node has one child
+		else if (!hasLeft(toDel) && hasRight(toDel)) {
+			toDel->parent->right = toDel->right;
+			delete toDel;
+		}
+		else if (hasLeft(toDel) && !hasRight(toDel)) {
+			toDel->parent->left = toDel->left;
+			delete toDel;
+		}
+	}
+}
+
+void deleteAll(node* &root) {
+	if (!root) {
+		return;
+	}
+
+	deleteAll(root->left);
+	deleteAll(root->right);
+	delete root;
+	root = NULL;
+
+}
+
 int main() {
 	root = insert(root, root, 12);
 	root = insert(root, root, 20);
@@ -239,5 +293,24 @@ int main() {
 	std::cout << "The nextHighest value is: " << nextHighest(root, 5) << "\n";
 	std::cout << "The nextHighest value is: " << nextHighest(root, 18) << "\n";
 	std::cout << "The nextHighest value is: " << nextHighest(root, 45) << "\n";
+	//********************************************
+	//Delete Element Tests
+	deleteNode(root, 12);
+	deleteNode(root, 5);
+	deleteNode(root, 20);
+	display(root);
+	std::cout << "\n";
+	root = insert(root, root, 30);
+	root = insert(root, root, 44);
+	root = insert(root, root, 25);
+	display(root);
+	std::cout << "\n";
+	deleteNode(root, 45);
+	deleteNode(root, 15);
+	display(root);
+	std::cout << "\n";
+	deleteAll(root);
+	root = NULL;
+	display(root);
 	return 0;
 }
