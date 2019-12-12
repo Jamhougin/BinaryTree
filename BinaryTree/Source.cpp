@@ -160,7 +160,7 @@ void display(nodeptr root) {
 	}
 }
 
-int height(node* root)
+int height(nodeptr root)
 {
 	if (root == NULL)
 		return 0;
@@ -174,6 +174,25 @@ int height(node* root)
 		else return(rHeight + 1);
 	}
 }
+
+bool isBalanced(nodeptr root)
+{
+	int leftTree;
+	int rightTree;
+
+	if (root == NULL) {
+		return true;
+	}
+
+	leftTree = height(root->left);
+	rightTree = height(root->right);
+
+	if (abs(leftTree - rightTree) <= 1 && isBalanced(root->left) && isBalanced(root->right)) {
+		return true;
+	}
+	return false;
+}
+
 
 bool deleteNode(nodeptr root, int val) {
 	nodeptr toDel = search(root, val);
@@ -290,9 +309,9 @@ int main() {
 	std::cout << "5's nextLowest value is: " << nextLowest(root, 5) << "\n";
 	std::cout << "18's nextLowest value is: " << nextLowest(root, 18) << "\n";
 	std::cout << "45's nextLowest value is: " << nextLowest(root, 45) << "\n";
-	std::cout << "The nextHighest value is: " << nextHighest(root, 5) << "\n";
-	std::cout << "The nextHighest value is: " << nextHighest(root, 18) << "\n";
-	std::cout << "The nextHighest value is: " << nextHighest(root, 45) << "\n";
+	std::cout << "5's nextHighest value is: " << nextHighest(root, 5) << "\n";
+	std::cout << "18's nextHighest value is: " << nextHighest(root, 18) << "\n";
+	std::cout << "45's nextHighest value is: " << nextHighest(root, 45) << "\n";
 	//********************************************
 	//Delete Element Tests
 	deleteNode(root, 12);
@@ -303,6 +322,22 @@ int main() {
 	root = insert(root, root, 30);
 	root = insert(root, root, 44);
 	root = insert(root, root, 25);
+	if (isBalanced(root)) {
+		std::cout << "Tree is Balanced\n";
+	}
+	else {
+		std::cout << "Tree is Not Balanced\n";
+	}
+
+	root = insert(root, root, 24);
+	root = insert(root, root, 2);
+	if (isBalanced(root)) {
+		std::cout << "Tree is Balanced\n";
+	}
+	else {
+		std::cout << "Tree is Not Balanced\n";
+		
+	}
 	display(root);
 	std::cout << "\n";
 	deleteNode(root, 45);
@@ -310,7 +345,6 @@ int main() {
 	display(root);
 	std::cout << "\n";
 	deleteAll(root);
-	root = NULL;
 	display(root);
 	return 0;
 }
